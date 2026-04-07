@@ -39,6 +39,9 @@ CRITICAL RULES:
 5. Prioritize podcasts most relevant to the coach's expertise and audience.
 6. Use web search extensively to find podcasts and their contact information.
 7. Cast a wide net — search for podcasts in the coach's direct niche AND in adjacent/related topics.
+8. Do NOT use placeholder or fake URLs. Every website and podcast_link must be a real URL you found via search. If you can't find the real URL, leave the field as an empty string.
+9. Do NOT link to aggregator sites like feedspot.com, podchaser.com, etc. Link to the actual podcast website or Apple Podcasts/Spotify page.
+10. Do NOT guess or fabricate Apple Podcast IDs. Only include podcast_link if you found the actual URL.
 
 After researching, return your final results as a JSON array inside a \`\`\`json code block with this exact structure:
 \`\`\`json
