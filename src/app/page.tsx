@@ -144,18 +144,18 @@ export default function Home() {
           Podcast Lead Finder
         </h1>
         <p className="text-gray-400 text-lg">
-          Enter a coach&apos;s niche and get podcast guest opportunities with real contact emails
+          Paste a coach&apos;s bio and get podcast guest opportunities with real contact emails
         </p>
       </div>
 
       <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-12">
         <div className="flex flex-col gap-4">
-          <input
-            type="text"
+          <textarea
             value={niche}
             onChange={(e) => setNiche(e.target.value)}
-            placeholder="e.g. Manufacturing leadership, family business succession planning"
-            className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder={"Paste the coach's full bio or niche description here...\n\ne.g. \"Sharee Wells is a career coach who works with professionals seeking better salaries, benefits, raises, promotions, and growth opportunities...\""}
+            rows={6}
+            className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
             disabled={loading}
           />
           <div className="flex gap-4 items-center">

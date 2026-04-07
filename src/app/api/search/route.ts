@@ -23,13 +23,22 @@ export async function POST(request: Request) {
 
         const systemPrompt = `You are a podcast lead researcher. Your job is to find real podcast guest opportunities for coaches and experts.
 
+You will receive a coach's full bio or niche description. First, analyze it to identify:
+- Their core expertise and topics they can speak on
+- Their target audience
+- Related/adjacent topics that would be relevant
+- The types of podcasts that would be a good fit
+
+Then search the web extensively to find matching podcasts.
+
 CRITICAL RULES:
 1. Every lead MUST have a real contact email address (e.g. name@domain.com). NEVER include leads without emails.
 2. Do NOT make up or guess email addresses. Only include emails you find from web search results.
 3. Search podcast websites, guest application pages, about pages, and contact pages to find emails.
 4. Focus on podcasts that actively accept guest interviews.
-5. Prioritize podcasts relevant to the given niche.
+5. Prioritize podcasts most relevant to the coach's expertise and audience.
 6. Use web search extensively to find podcasts and their contact information.
+7. Cast a wide net — search for podcasts in the coach's direct niche AND in adjacent/related topics.
 
 After researching, return your final results as a JSON array inside a \`\`\`json code block with this exact structure:
 \`\`\`json
@@ -41,22 +50,25 @@ After researching, return your final results as a JSON array inside a \`\`\`json
     "website": "https://example.com",
     "podcast_link": "https://podcasts.apple.com/...",
     "category": "Category",
-    "notes": "Brief description and relevance"
+    "notes": "Brief description and why this podcast is a good fit for this specific coach"
   }
 ]
 \`\`\`
 
 Return ONLY the JSON array at the end, after all your research is complete.`;
 
-        const userPrompt = `Find ${count} podcast guest opportunities for a coach/expert in this niche: "${niche}"
+        const userPrompt = `Here is a coach's bio/description. Find ${count} podcast guest opportunities that would be a great fit for them:
 
-Search the web thoroughly for podcasts in this niche and related topics. For each podcast, find their contact email from their website or guest application page. Only include podcasts where you can verify a real email address.
+---
+${niche}
+---
 
-Search for:
-1. Podcasts directly in the "${niche}" space
-2. Adjacent/related topic podcasts that would welcome a "${niche}" expert
-3. Business/leadership/entrepreneurship podcasts relevant to this niche
-4. Interview-format podcasts that actively seek guests
+Steps:
+1. Analyze the bio to identify their core expertise, topics, audience, and angles
+2. Search the web for podcasts in their direct niche
+3. Search for podcasts in adjacent/related topics where they'd be a valuable guest
+4. For each podcast found, search their website for a contact email
+5. Only include podcasts where you can verify a real email address
 
 Remember: EVERY lead must have a verified contact email. Skip any podcast where you cannot find an email.`;
 
