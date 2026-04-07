@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       };
 
       try {
-        send({ type: "status", message: `Searching for ${count} podcast leads in "${niche}"...` });
+        send({ type: "status", message: `Searching for ${count} podcast leads...` });
 
         const systemPrompt = `You are a podcast lead researcher. Your job is to find real podcast guest opportunities for coaches and experts.
 
@@ -72,30 +72,56 @@ Steps:
 
 Remember: EVERY lead must have a verified contact email. Skip any podcast where you cannot find an email.`;
 
-        // Web search is a server-side tool — the API executes it automatically
-        const response = await anthropic.messages.create({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 16000,
-          system: systemPrompt,
-          tools: [
-            {
-              type: "web_search_20250305",
-              name: "web_search",
-              max_uses: 40,
-            },
-          ],
-          messages: [{ role: "user", content: userPrompt }],
-        });
+        const messages: Anthropic.Messages.MessageParam[] = [
+          { role: "user", content: userPrompt },
+        ];
+
+        let fullText = "";
+        let turnCount = 0;
+        const maxTurns = 20;
+
+        while (turnCount < maxTurns) {
+          turnCount++;
+          send({ type: "status", message: `Researching podcasts... (turn ${turnCount})` });
+
+          const response = await anthropic.messages.create({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 16000,
+            system: systemPrompt,
+            tools: [
+              {
+                type: "web_search_20250305",
+                name: "web_search",
+                max_uses: 40,
+              },
+            ],
+            messages,
+          });
+
+          // Collect text from this response
+          for (const block of response.content) {
+            if (block.type === "text") {
+              fullText += block.text;
+            }
+          }
+
+          // If Claude is done, break out
+          if (response.stop_reason === "end_turn") {
+            break;
+          }
+
+          // If Claude paused (needs to continue), add assistant response and empty user turn
+          if (response.stop_reason === "pause_turn") {
+            messages.push({ role: "assistant", content: response.content });
+            messages.push({ role: "user", content: "Continue your research and provide the final results." });
+            continue;
+          }
+
+          // Any other stop reason, break
+          break;
+        }
 
         send({ type: "status", message: "Processing results..." });
-
-        // Collect all text from the response
-        let fullText = "";
-        for (const block of response.content) {
-          if (block.type === "text") {
-            fullText += block.text;
-          }
-        }
 
         // Extract JSON from the response text
         const jsonMatch = fullText.match(/```json\s*([\s\S]*?)```/);
@@ -120,7 +146,7 @@ Remember: EVERY lead must have a verified contact email. Skip any podcast where 
         }
 
         if (!parsed) {
-          // Fallback: find any JSON array in the text
+          // Fallback: find any JSON array
           const arrayMatch = fullText.match(/\[\s*\{[\s\S]*?\}\s*\]/);
           if (arrayMatch) {
             try {
