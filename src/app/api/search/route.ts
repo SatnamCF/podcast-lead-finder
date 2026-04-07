@@ -33,7 +33,7 @@ Then search the web extensively to find matching podcasts.
 
 CRITICAL RULES:
 1. Every lead MUST have a real contact email address (e.g. name@domain.com). NEVER include leads without emails.
-2. Do NOT make up or guess email addresses. Only include emails you find from web search results.
+2. Do NOT make up or guess email addresses. Only include emails you actually find on podcast websites, contact pages, or guest application forms via web search. Verify the email domain matches the podcast's actual website domain.
 3. Search podcast websites, guest application pages, about pages, and contact pages to find emails.
 4. Focus on podcasts that actively accept guest interviews.
 5. Prioritize podcasts most relevant to the coach's expertise and audience.
@@ -42,6 +42,9 @@ CRITICAL RULES:
 8. Do NOT use placeholder or fake URLs. Every website and podcast_link must be a real URL you found via search. If you can't find the real URL, leave the field as an empty string.
 9. Do NOT link to aggregator sites like feedspot.com, podchaser.com, etc. Link to the actual podcast website or Apple Podcasts/Spotify page.
 10. Do NOT guess or fabricate Apple Podcast IDs. Only include podcast_link if you found the actual URL.
+11. ONLY include podcasts that are currently ACTIVE — they must have published an episode within the last 6 months. Do NOT include paused, ended, or dormant podcasts.
+12. Start by searching for the BIGGEST and most popular podcasts in the coach's exact niche first. These are the highest-value targets. Then expand to smaller and adjacent podcasts.
+13. When verifying emails, search specifically for the podcast's contact page or guest submission page. The email domain must match the podcast's website domain. Do not guess email prefixes like "info@" or "hello@" without confirmation.
 
 After researching, return your final results as a JSON array inside a \`\`\`json code block with this exact structure:
 \`\`\`json
