@@ -230,18 +230,17 @@ export default function Home() {
           />
 
           {pastLeads.length > 0 && (
-            <div className="flex items-center justify-between px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg">
-              <span className="text-sm text-gray-400">
-                {pastLeads.length} leads already found for this coach.
-                New search will find different ones.
-              </span>
-              <div className="flex gap-2">
+            <div className="px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg space-y-3">
+              <p className="text-sm text-gray-300 font-medium">
+                {pastLeads.length} leads already found for this coach. New search will find different ones.
+              </p>
+              <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => setShowHistory(!showHistory)}
-                  className="text-xs text-blue-400 hover:text-blue-300"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
                 >
-                  {showHistory ? "Hide" : "View all"}
+                  {showHistory ? "Hide Past Leads" : "View All Past Leads"}
                 </button>
                 <button
                   type="button"
@@ -249,16 +248,16 @@ export default function Home() {
                     pastLeads,
                     `all_podcast_leads_${getCoachName(niche)}.csv`
                   )}
-                  className="text-xs text-green-400 hover:text-green-300"
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
                 >
-                  Download all
+                  Download All CSV
                 </button>
                 <button
                   type="button"
                   onClick={clearHistory}
-                  className="text-xs text-red-400 hover:text-red-300"
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
                 >
-                  Reset
+                  Reset History
                 </button>
               </div>
             </div>
