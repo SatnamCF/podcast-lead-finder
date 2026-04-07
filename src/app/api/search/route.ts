@@ -91,12 +91,13 @@ Remember: EVERY lead must have a verified contact email. Skip any podcast where 
             model: "claude-sonnet-4-20250514",
             max_tokens: 16000,
             system: systemPrompt,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             tools: [
               {
                 type: "web_search_20250305",
                 name: "web_search",
                 max_uses: 40,
-              },
+              } as any,
             ],
             messages,
           });
@@ -114,18 +115,15 @@ Remember: EVERY lead must have a verified contact email. Skip any podcast where 
           }
 
           // If Claude paused (needs to continue), clean up content and continue
-          if (response.stop_reason === "pause_turn") {
+          if ((response.stop_reason as string) === "pause_turn") {
             // Remove trailing server_tool_use blocks that don't have a matching result
-            const content = [...response.content];
-            // Collect all web_search_tool_result tool_use_ids
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const content = [...response.content] as any[];
             const resultIds = new Set(
               content
-                .filter((b): b is Anthropic.Messages.ContentBlock & { type: "web_search_tool_result" } =>
-                  b.type === "web_search_tool_result"
-                )
-                .map((b) => (b as unknown as { tool_use_id: string }).tool_use_id)
+                .filter((b) => b.type === "web_search_tool_result")
+                .map((b) => b.tool_use_id)
             );
-            // Filter out server_tool_use blocks without a matching result
             const cleanedContent = content.filter((b) => {
               if (b.type === "server_tool_use") {
                 return resultIds.has(b.id);
