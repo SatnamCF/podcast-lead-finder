@@ -110,9 +110,27 @@ Remember: EVERY lead must have a verified contact email. Skip any podcast where 
             break;
           }
 
-          // If Claude paused (needs to continue), add assistant response and empty user turn
+          // If Claude paused (needs to continue), clean up content and continue
           if (response.stop_reason === "pause_turn") {
-            messages.push({ role: "assistant", content: response.content });
+            // Remove trailing server_tool_use blocks that don't have a matching result
+            const content = [...response.content];
+            // Collect all web_search_tool_result tool_use_ids
+            const resultIds = new Set(
+              content
+                .filter((b): b is Anthropic.Messages.ContentBlock & { type: "web_search_tool_result" } =>
+                  b.type === "web_search_tool_result"
+                )
+                .map((b) => (b as unknown as { tool_use_id: string }).tool_use_id)
+            );
+            // Filter out server_tool_use blocks without a matching result
+            const cleanedContent = content.filter((b) => {
+              if (b.type === "server_tool_use") {
+                return resultIds.has(b.id);
+              }
+              return true;
+            });
+
+            messages.push({ role: "assistant", content: cleanedContent });
             messages.push({ role: "user", content: "Continue your research and provide the final results." });
             continue;
           }
