@@ -5,7 +5,7 @@ const anthropic = new Anthropic();
 export const maxDuration = 300;
 
 export async function POST(request: Request) {
-  const { niche, count = 25 } = await request.json();
+  const { niche, count = 25, exclude = [] } = await request.json();
 
   if (!niche || typeof niche !== "string") {
     return Response.json({ error: "Niche is required" }, { status: 400 });
@@ -76,7 +76,11 @@ Steps:
 4. For each podcast found, search their website for a contact email
 5. Only include podcasts where you can verify a real email address
 
-Remember: EVERY lead must have a verified contact email. Skip any podcast where you cannot find an email.`;
+Remember: EVERY lead must have a verified contact email. Skip any podcast where you cannot find an email.${
+          exclude.length > 0
+            ? `\n\nIMPORTANT: Do NOT include any of these podcasts — they were already found in previous searches:\n${exclude.map((name: string) => `- ${name}`).join("\n")}`
+            : ""
+        }`;
 
         const messages: Anthropic.Messages.MessageParam[] = [
           { role: "user", content: userPrompt },
