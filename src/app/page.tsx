@@ -43,6 +43,18 @@ export default function Home() {
     return bio.trim().slice(0, 100).toLowerCase().replace(/\s+/g, " ");
   }, []);
 
+  // Extract a filename-friendly name from the bio (coach name or first 3 words)
+  const getCoachName = useCallback((bio: string) => {
+    const trimmed = bio.trim();
+    // Try to extract a name pattern like "John Smith is a..." or "John Smith,"
+    const nameMatch = trimmed.match(/^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)(?:\s+is\b|\s*,|\s*-)/);
+    if (nameMatch) {
+      return nameMatch[1].replace(/\s+/g, "_");
+    }
+    // Fallback: first 3 words
+    return trimmed.split(/\s+/).slice(0, 3).join("_").replace(/[^a-zA-Z0-9_]/g, "");
+  }, []);
+
   // Load past leads when niche changes
   useEffect(() => {
     if (!niche.trim()) {
@@ -235,7 +247,7 @@ export default function Home() {
                   type="button"
                   onClick={() => downloadCSV(
                     pastLeads,
-                    `all_podcast_leads_${niche.replace(/\s+/g, "_").slice(0, 30).toLowerCase()}.csv`
+                    `all_podcast_leads_${getCoachName(niche)}.csv`
                   )}
                   className="text-xs text-green-400 hover:text-green-300"
                 >
@@ -303,7 +315,7 @@ export default function Home() {
             <button
               onClick={() => downloadCSV(
                 pastLeads,
-                `all_podcast_leads_${niche.replace(/\s+/g, "_").slice(0, 30).toLowerCase()}.csv`
+                `all_podcast_leads_${getCoachName(niche)}.csv`
               )}
               className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
             >
@@ -363,7 +375,7 @@ export default function Home() {
             <button
               onClick={() => downloadCSV(
                 leads,
-                `podcast_leads_${niche.replace(/\s+/g, "_").slice(0, 30).toLowerCase()}.csv`
+                `podcast_leads_${getCoachName(niche)}.csv`
               )}
               className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
             >
